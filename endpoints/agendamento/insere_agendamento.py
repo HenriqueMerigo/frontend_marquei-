@@ -1,0 +1,59 @@
+import re as regex
+import requests as re
+from datetime import date, datetime
+
+porta = 5000
+base = f"http://127.0.0.1:{porta}"
+
+def insere_agendamento(id_cliente, id_funcionario, ds_status, vl_total_bruto_agendamento, vl_desconto_agendamento, vl_gorjeta, vl_total_liquido_agendamento, dh_agendamento):
+    url = f"{base}/insere_agendamento"
+
+    # Trata as datas para garantir que fiquem no formato string (ISO)
+    dh_agenda = dh_agendamento.isoformat() if isinstance(dh_agendamento, (date, datetime)) else dh_agendamento
+    
+    payload = {
+        "id_cliente": id_cliente,
+        "id_funcionario": id_funcionario,
+        "ds_status": ds_status,
+        "vl_total_bruto_agendamento": vl_total_bruto_agendamento,
+        "vl_desconto_agendamento": vl_desconto_agendamento,
+        "vl_gorjeta": vl_gorjeta,
+        "vl_total_liquido_agendamento": vl_total_liquido_agendamento,
+        "dh_agendamento": dh_agenda
+    }
+    if not id_cliente or not id_funcionario or not dh_agendamento:
+        raise ValueError("Todos os campos são obrigatórios e devem ser preenchidos corretamente.")
+
+    response = re.post(url, json=payload)
+    
+    return response
+
+def insere_agendamento_produto_servico(id_produto_servico, qt_produto, vl_unitario_produto, vl_total_produto):
+    url = f"{base}/insere_agendamento_produto_servico"
+    
+    payload = {
+        "id_produto_servico" : str(id_produto_servico),
+        "qt_produto" : qt_produto,
+        "vl_unitario_produto" : vl_unitario_produto,
+        "vl_total_produto" : vl_total_produto
+    }
+    if not id_produto_servico:
+        raise ValueError("Os produtos/servicos são obrigatórios e devem ser preenchidos corretamente.")
+    response = re.post(url, json=payload)
+    
+    return response
+
+def remove_estoque_agendamento(vl_subtracao, id_produto_servico):
+    url = f"{base}/remove_estoque_agendamento"
+
+    payload = {
+        "vl_subtracao": vl_subtracao,
+        "id_produto_servico": id_produto_servico        
+    }
+
+    if not id_produto_servico or not vl_subtracao:
+        raise ValueError("Os produtos/servicos e o valor de subtracao são obrigatórios e devem ser preenchidos corretamente.")
+    
+    response = re.put(url, json=payload)
+    
+    return response
