@@ -12,4 +12,4 @@ Interface web do sistema **Marquei**, ERP simples e intuitivo para barbearias, s
 - **Estoque & Caixa:** Vendas de balcão e controle de lançamentos.
 
 ## 🔗 Repositório Relacionado
-- [Backend (API)](https://github.com/HenriqueMerigo/backend_marquei)
+- [Backend (API)](https://github.com/HenriqueMerigo/backend_marquei-)
