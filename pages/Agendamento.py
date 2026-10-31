@@ -340,8 +340,28 @@ def modal_agendamentos_pendentes():
                     st.error(f"Erro ao deletar agendamento: {response.text}")
             st.divider()
 
+@st.dialog("Finalizar Agendamento", width="large")
+def modal_finalizar_agendamento():
+    agendamento_busca = busca_agendamento()
+
+    agendamento_pendentes = [
+        item for item in agendamento_busca
+        if isinstance(item, dict) and item.get("ds_status") == "AGENDADO" or item.get("ds_status") == "CANCELADO"
+    ]
+
+    id_agendamento = st.selectbox(
+        "Selecione o agendamento para finalizar", agendamento_pendentes,
+        format_func=lambda c: f"ID Agendamento {c.get('id_agendamento')} - Funcionario {c.get('id_funcionario')} - Cliente {c.get('id_cliente')} - {c.get('dh_agendamento')} - R$ {c.get('vl_total_liquido_agendamento')} - Status: {c.get('ds_status')}"
+    )
+
+    if st.button("Finalizar agendamento", width='stretch'):
+        finaliza_status_agendamento(id_agendamento.get("id_agendamento"))
+        insere_financeiro(id_agendamento.get("id_agendamento"), id_agendamento.get("vl_total_liquido_agendamento"))
+        st.success("Agendamento finalizado com sucesso!")
+        st.rerun()
+
 def interacoes():
-    col_novo, col_remover, col_pendente = st.columns(3)
+    col_novo, col_remover, col_pendente, col_finaliza = st.columns(4)
 
     with col_novo:
         if st.button("Agendar Novo", width='stretch'):
@@ -356,6 +376,11 @@ def interacoes():
         if st.button("Agendamentos Pendentes", width='stretch'):
             st.session_state["data_selecionada"] = None
             modal_agendamentos_pendentes()
+
+    with col_finaliza:
+        if st.button("Finalizar Agendamento", width='stretch'):
+            st.session_state["data_selecionada"] = None
+            modal_finalizar_agendamento()
 
 def calendario():
     hoje = date.today()
@@ -426,7 +451,6 @@ def calendario():
                     ):
                         st.session_state["data_selecionada"] = data_atual_btn
                         abrir_modal_data(data_atual_btn)
-
 
 @st.dialog("Detalhes da Data", width="large")
 def abrir_modal_data(data):
