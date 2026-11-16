@@ -33,10 +33,11 @@ def modal_inserir_funcionario():
     if st.button("Salvar"):
         response = insere_funcionario(ds_funcionario, ds_contato, dh_primeiro_agendamento, dh_ultimo_agendamento, pe_comissao)
         if response.status_code != 201:
-            st.error(f"Erro ao inserir funcionario: {response.text}")
+            st.toast(f"Erro ao inserir funcionario: {response.text}", icon="❌")
         else:
-            st.success(f"funcionario {ds_funcionario} inserido com sucesso!")
             time.sleep(2)
+            st.toast(f"O funcionario {ds_funcionario} foi inserido com sucesso!", icon="✅")
+            time.sleep(1)
             st.rerun()
 
 @st.dialog("Editar funcionario", width='large')
@@ -60,12 +61,14 @@ def modal_editar_funcionario():
                 dh_ultimo_agendamento = st.date_input("Data do último agendamento", value=pd.to_datetime(funcionario_data['dh_ultimo_agendamento']))
 
             if st.button("Salvar Alterações"):
-                st.warning("Aguarde enquanto as alterações são salvas...")
                 time.sleep(2)
+                st.toast(f"Editando funcionario {ds_funcionario}...", icon="⏳")
+                time.sleep(1)
                 response = edita_funcionario(id_funcionario, ds_funcionario, ds_contato, dh_primeiro_agendamento, dh_ultimo_agendamento, pe_comissao)
                 if response.status_code != 200:
-                    st.error(f"Erro ao editar funcionario: {response.text}")
                     time.sleep(2)
+                    st.toast(f"Erro ao editar funcionario: {response.text}", icon="❌")
+                    time.sleep(1)
                 else:
                     st.rerun()
 
@@ -105,11 +108,12 @@ def modal_deletar_funcionario():
 
             if response.status_code == 200:
                 st.session_state["confirmar_delete"] = False
-                st.success("Funcionario deletado com sucesso!")
                 time.sleep(2)
+                st.toast("Funcionario deletado com sucesso!", icon="✅")
+                time.sleep(1)
                 st.rerun()
             else:
-                st.error(f"Erro ao deletar funcionario: {response.text}")
+                st.toast(f"Erro ao deletar funcionario: {response.text}", icon="❌")
 
 if __name__ == "__main__":
     funcionario()

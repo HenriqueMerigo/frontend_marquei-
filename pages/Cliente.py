@@ -31,10 +31,11 @@ def modal_inserir_cliente():
     if st.button("Salvar"):
         response = insere_cliente(nome, telefone, dh_prim_agenda, dh_ult_agenda)
         if response.status_code != 201:
-            st.error(f"Erro ao inserir cliente: {response.text}")
+            st.toast(f"Erro ao inserir cliente: {response.text}", icon="❌")
         else:
-            st.success(f"Cliente {nome} inserido com sucesso!")
             time.sleep(2)
+            st.toast(f"Cliente {nome} inserido com sucesso!", icon="✅")
+            time.sleep(1)
             st.rerun()
 
 @st.dialog("Editar Cliente", width='large')
@@ -57,13 +58,15 @@ def modal_editar_cliente():
                 dh_ult_agenda = st.date_input("Data do último agendamento", value=pd.to_datetime(cliente_data['dh_ultimo_agendamento']))
 
             if st.button("Salvar Alterações"):
-                st.warning("Aguarde enquanto as alterações são salvas...")
+                st.toast(f"Editando cliente {nome}...", icon="⏳")
                 response = edita_cliente(id_cliente, nome, telefone, dh_prim_agenda, dh_ult_agenda)
                 time.sleep(2)
                 if response.status_code != 200:
-                    st.error(f"Erro ao editar cliente: {response.text}")
+                    st.toast(f"Erro ao editar cliente: {response.text}", icon="❌")
                     time.sleep(2)
                 else:
+                    st.toast(f"Cliente {nome} editado com sucesso!", icon="✅")
+                    time.sleep(1)
                     st.rerun()
 
 @st.dialog("Deletar Cliente", width="large")
@@ -102,11 +105,12 @@ def modal_deletar_cliente():
 
             if response.status_code == 200:
                 st.session_state["confirmar_delete"] = False
-                st.success("Cliente deletado com sucesso!")
                 time.sleep(2)
+                st.toast("Cliente deletado com sucesso!", icon="✅")
+                time.sleep(1)
                 st.rerun()
             else:
-                st.error(f"Erro ao deletar cliente: {response.text}")
+                st.toast(f"Erro ao deletar cliente: {response.text}", icon="❌")
 
 if __name__ == "__main__":
     cliente()

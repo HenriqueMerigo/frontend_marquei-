@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import time
 
-
-from endpoints.funcionario.deleta_funcionario import deleta_funcionario
 from endpoints.produto_servico.lanca_baixa_produto import lanca_baixa_produto
 from header.page_config import page_config
 
@@ -17,7 +15,6 @@ def produto():
     page_config()
 
     st.title("Produto/Servico")
-
 
 @st.dialog("Inserir Produto Servico", width='large')
 def modal_inserir_produto_servico():
@@ -37,8 +34,9 @@ def modal_inserir_produto_servico():
         if response.status_code != 201:
             st.error(f"Erro ao inserir produto: {response.text}")
         else:
-            st.toast(f"O {ds_categoria} foi inserido com sucesso!", icon="✅")
             time.sleep(2)
+            st.toast(f"O {ds_categoria} foi inserido com sucesso!", icon="✅")
+            time.sleep(1)
             st.rerun()
 
 @st.dialog("Editar Produto Servico", width='large')
@@ -62,14 +60,16 @@ def modal_editar_produto_servico():
                 vl_unitario_produto_venda = st.number_input("Valor de venda do produto/servico", value=produto_servico_data['vl_unitario_produto_venda'])
 
             if st.button("Salvar Alterações"):
-                st.warning("Aguarde enquanto as alterações são salvas...")
                 time.sleep(2)
+                st.toast("Aguarde enquanto as alterações são salvas...", icon="⏳")
+                time.sleep(1)
                 response = edita_produto_servico(id_produto_servico, ds_produto_servico, ds_categoria, qt_estoque, vl_unitario_produto_compra, vl_unitario_produto_venda)
                 if response.status_code != 200:
                     st.error(f"Erro ao editar cliente: {response.text}")
                 else:
-                    st.toast("Alterações salvas com sucesso!", icon="✅")
                     time.sleep(2)
+                    st.toast("Alterações salvas com sucesso!", icon="✅")
+                    time.sleep(1)
                     st.rerun()
 
 @st.dialog("Deletar Produto", width="large")
@@ -108,8 +108,9 @@ def modal_deletar_produto_servico():
 
             if response.status_code == 200:
                 st.session_state["confirmar_delete"] = False
-                st.success("Produto/Servico deletado com sucesso!")
                 time.sleep(2)
+                st.toast("Produto/Servico deletado com sucesso!", icon="✅")
+                time.sleep(1)
                 st.rerun()
             else:
                 st.error(f"Erro ao deletar produto/servico: {response.text}")
@@ -140,8 +141,9 @@ def modal_registrar_compra():
                 response = lanca_compra_produto(id_produto_servico, vl_edicao, valor_prod_atual)
                 
                 if response.status_code == 200:
-                    st.toast("Compra registrada com sucesso!", icon="✅")
                     time.sleep(2)
+                    st.toast("Compra registrada com sucesso!", icon="✅")
+                    time.sleep(1)
                     st.rerun()
                 else:
                     st.error(f"Erro ao registrar compra: {response.text}")
@@ -171,8 +173,9 @@ def modal_registrar_baixa():
                 response = lanca_baixa_produto(id_produto_servico, vl_edicao)
                 
                 if response.status_code == 200:
-                    st.toast("Baixa registrada com sucesso!", icon="✅")
                     time.sleep(2)
+                    st.toast("Baixa registrada com sucesso!", icon="✅")
+                    time.sleep(1)
                     st.rerun()
                 else:
                     st.error(f"Erro ao registrar baixa: {response.text}")
@@ -229,7 +232,7 @@ def busca_dados():
         "vl_unitario_produto_venda": "Valor de Venda",
         "dh_ultima_movimentacao": "Ultima Venda"
     })
-    st.dataframe(df, hide_index=True, width="content")
+    st.dataframe(df, hide_index=True, width="stretch")
 
 if __name__ == "__main__":
     produto()

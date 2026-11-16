@@ -13,7 +13,8 @@ def lanca_compra_produto(id_produto_servico: int, vl_edicao: int, vl_unitario_pr
     payload = {
         "id_produto_servico": id_produto_servico,
         "vl_unitario_produto_compra": vl_unitario_produto_compra,
-        "vl_edicao": vl_edicao
+        "vl_edicao": vl_edicao,
+        "vl_total_produto_compra": vl_unitario_produto_compra * vl_edicao * -1
     }
     if not vl_edicao or not id_produto_servico:
         raise ValueError("Os campos 'vl_edicao' e 'id_produto_servico' são obrigatórios e devem ser preenchidos corretamente.")

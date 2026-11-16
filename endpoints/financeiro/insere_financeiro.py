@@ -5,12 +5,13 @@ from datetime import date, datetime
 porta = 5000
 base = f"http://127.0.0.1:{porta}"
 
-def insere_financeiro(id_agendamento, vl_valor):
+def insere_financeiro(id_agendamento, vl_valor, ds_categoria):
     url = f"{base}/insere_financeiro"
 
     payload = {
         "id_agendamento": id_agendamento,
-        "vl_total": vl_valor
+        "vl_total": vl_valor,
+        "ds_categoria": ds_categoria
     }
     response = re.post(url, json=payload)
     return response

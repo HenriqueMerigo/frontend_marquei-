@@ -23,6 +23,6 @@ def page_config():
     st.set_page_config(
         page_title="Barber GO",
         page_icon=str(icon_path),
-        layout="centered",
-        initial_sidebar_state="expanded"
+        layout="wide",
+        initial_sidebar_state="collapsed"
     )
